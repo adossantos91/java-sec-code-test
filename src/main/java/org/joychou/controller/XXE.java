@@ -32,6 +32,8 @@ import org.jdom2.input.SAXBuilder;
 import org.joychou.util.WebUtils;
 import org.xmlbeam.annotation.XBRead;
 
+import com.google.common.html.HtmlEscapers;
+
 /**
  * Java xxe vuln and security code.
  *
@@ -419,8 +421,9 @@ public class XXE {
         @PostMapping(value = "/xmlbeam/vuln")
         HttpEntity<String> post(@RequestBody UserPayload user) {
             try {
-                logger.info(user.toString());
-                return ResponseEntity.ok(String.format("hello, %s!", user.getUserName()));
+                String escapedUser = HtmlEscapers.htmlEscaper().escape(user.toString());
+                logger.info(escapedUser);
+                return ResponseEntity.ok(String.format("hello, %s!", HtmlEscapers.htmlEscaper().escape(user.getUserName())));
             }catch (Exception e){
                 e.printStackTrace();
                 return ResponseEntity.ok("error");
